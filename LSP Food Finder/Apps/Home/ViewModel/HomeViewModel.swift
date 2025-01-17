@@ -21,10 +21,19 @@ class HomeViewModel: ObservableObject {
     @Published var state: HomeViewState = .idle
     @Published var searchBarText: String = ""
     @Published var restoList: [RestoDetailResponseModel] = []
+    @Published var filteredRestoList: [RestoDetailResponseModel] = []
     @Published var idUser: UserProfileResponseModel?
     
     init(repository: HomeRepositoryProtocol) {
         self.repository = repository
+    }
+    
+    func filterResto(by keyword: String) {
+        if keyword.isEmpty {
+            self.filteredRestoList = restoList
+        } else {
+            self.filteredRestoList = restoList.filter { $0.name.lowercased().contains(keyword.lowercased()) }
+        }
     }
     
     private func updateHomeViewState(_ state: HomeViewState) {
@@ -45,7 +54,7 @@ class HomeViewModel: ObservableObject {
         
         updateHomeViewState(.loading)
         
-        repository.fetchRestoList(token: token) {[weak self] result in 
+        repository.fetchRestoList(token: token) {[weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
@@ -63,10 +72,11 @@ class HomeViewModel: ObservableObject {
             return
         }
         self.restoList = response
+        self.filteredRestoList = response
         isDataCanFetch = false
         updateHomeViewState(.idle)
     }
-
+    
     private func handleFailedFetchRestoList(_ error: Error) {
         isDataCanFetch = true
         updateHomeViewState(.error(error.localizedDescription))
@@ -76,7 +86,7 @@ class HomeViewModel: ObservableObject {
         guard let token = KeychainManager.shared.get(key: "access_token") else {
             return
         }
-                
+        
         repository.getProfileData(token: token) {[weak self] result in
             DispatchQueue.main.async {
                 switch result {

@@ -22,7 +22,11 @@ struct HomeView: View {
                             value: $textInputValue,
                             useWhiteBackground: false
                         )
-                        ForEach(viewModel.restoList, id: \.id) { resto in
+                        .onChange(of: textInputValue) { newValue in
+                            viewModel.filterResto(by: newValue)
+                        }
+                        
+                        ForEach(viewModel.filteredRestoList, id: \.id) { resto in
                             NavigationLink(destination: SegmentedControlDetailResto(resto: resto, userId: viewModel.idUser?.id ?? 0)) {
                                 ListRestoItemView(data: resto)
                             }
@@ -52,5 +56,14 @@ struct HomeView: View {
         }
         .navigationBarBackButtonHidden()
         .navigationTitle("Restaurants")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(destination: LoginView(viewModel: AuthViewModel(repository: AuthRepository(authDataHandler: AuthDataHandler())))) {
+                    Image(systemName: "door.right.hand.open")
+                        .font(.system(size: 20))
+                        .foregroundColor(.red)
+                }
+            }
+        }
     }
 }

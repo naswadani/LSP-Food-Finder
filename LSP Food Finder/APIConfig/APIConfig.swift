@@ -66,4 +66,8 @@ struct APIConfig {
     static func editReview(id: Int) -> String {
         return "\(baseURL)/api/review/\(id)"
     }
+    
+    static func getMenuRating(id: Int) -> String {
+        return "\(baseURL)/api/menu/\(id)/rating"
+    }
 }

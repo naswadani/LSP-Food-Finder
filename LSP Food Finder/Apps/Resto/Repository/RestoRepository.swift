@@ -14,6 +14,8 @@ protocol RestoRepositoryProtocol {
     func createRestoReview(request: CreateReviewRestoRequestModel, id: Int, token: String, completion: @escaping (Result<ReviewResponseModel, Error>) -> Void)
     func updateRestoReview(request: CreateReviewRestoRequestModel, id: Int, token: String, completion: @escaping (Result<ReviewResponseModel, any Error>) -> Void)
     func deleteRestoReview(id: Int, token: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchMenuRating(id: Int, token: String, completion: @escaping (Result<[MenuRatingResponseModel], Error>) -> Void)
+    func createMenuRating(request: CreateMenuRatingRequestModel,id: Int, token: String, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class RestoRepository: RestoRepositoryProtocol {
@@ -39,5 +41,11 @@ class RestoRepository: RestoRepositoryProtocol {
     }
     func deleteRestoReview(id: Int, token: String, completion: @escaping (Result<Void, Error>) -> Void) {
         restoDataHandler.deleteRestoReview(id: id, token: token, completion: completion)
+    }
+    func fetchMenuRating(id: Int, token: String, completion: @escaping (Result<[MenuRatingResponseModel], Error>) -> Void) {
+        restoDataHandler.fetchMenuRating(id: id, token: token, completion: completion)
+    }
+    func createMenuRating(request: CreateMenuRatingRequestModel,id: Int, token: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        restoDataHandler.createMenuRating(request: request, id: id, token: token, completion: completion)
     }
 }

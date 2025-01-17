@@ -25,12 +25,15 @@ class MenuListViewModel: ObservableObject {
     @Published var reviewList: [ReviewResponseModel] = []
     @Published var userId: Int
     @Published var requestCreateReview: CreateReviewRestoRequestModel
+    @Published var requestCreateMenuRating: CreateMenuRatingRequestModel
+    @Published var ratingMenuList: [MenuRatingResponseModel] = []
     
     init(repository: RestoRepositoryProtocol, selectedRestoId: Int, userId: Int) {
         self.repository = repository
         self.selectedRestoId = selectedRestoId
         self.userId = userId
         self.requestCreateReview = CreateReviewRestoRequestModel(restaurantID: 0, userID: 0, rating: 0, comment: "")
+        self.requestCreateMenuRating = CreateMenuRatingRequestModel(rating: nil)
         self.selectedReviewID = 0
     }
     
@@ -134,7 +137,7 @@ class MenuListViewModel: ObservableObject {
         repository.deleteRestoReview(id: selectedReviewID, token: token) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let response):
+                case .success:
                     self?.refreshReview()
                 case .failure(let error):
                     self?.handleFailedCreateReview(error)
@@ -200,6 +203,47 @@ class MenuListViewModel: ObservableObject {
     
     private func handleFailedCreateReview(_ error: Error) {
         updateMenuListState(.error(error.localizedDescription))
+    }
+    
+    
+    func fetchMenuRating(id: Int) {
+        guard let token = KeychainManager.shared.get(key: "access_token") else {
+            return
+        }
+        
+        repository.fetchMenuRating(id: id, token: token) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self?.handleSuccessFetchMenuRatingList(response)
+                case .failure(let error):
+                    self?.handleFailedFetchReviewList(error)
+                }
+            }
+        }
+    }
+    
+    func createMenuRating(id: Int) {
+        guard let token = KeychainManager.shared.get(key: "access_token") else {
+            return
+        }
+        
+        repository.createMenuRating(request: requestCreateMenuRating, id: id, token: token) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.fetchMenuRating(id: id)
+                    self?.requestCreateMenuRating = CreateMenuRatingRequestModel(rating: nil)
+                case .failure(let error):
+                    self?.handleFailedFetchReviewList(error)
+                }
+            }
+            
+        }
+    }
+    
+    private func handleSuccessFetchMenuRatingList(_ response: [MenuRatingResponseModel]) {
+        self.ratingMenuList = response
     }
 }
 

@@ -69,6 +69,7 @@ struct LoginView: View {
             }
             .preferredColorScheme(.light)
             .navigationDestination(isPresented: $viewModel.loginSuccess) { TabBarView() }
+            .navigationBarBackButtonHidden()
         }
     }
 }

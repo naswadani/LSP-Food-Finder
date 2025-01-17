@@ -24,7 +24,10 @@ struct MenuListView: View {
                 case .idle:
                     VStack(spacing: 20) {
                         ForEach(viewModel.menuList, id: \.id) { menu in
-                            MenuListItemView(data: menu)
+                            NavigationLink(destination: AddMenuRatingView(selectedMenu: menu.id, viewModel: viewModel), label: {
+                                MenuListItemView(data: menu)
+                            })
+                 
                         }
                     }
                     .padding(.horizontal)
