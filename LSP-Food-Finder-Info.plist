@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Kita butuh akses untuk menggunakan Library</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Kita butuh akses untuk menggunakan Kamera</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Kita butuh lokasi terkini untuk mendaftarkan restoran anda</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+	</array>
+	<key>APIBaseURL</key>
+	<string>https://foodfinder.fahrifirdaus.cloud</string>
+</dict>
+</plist>
