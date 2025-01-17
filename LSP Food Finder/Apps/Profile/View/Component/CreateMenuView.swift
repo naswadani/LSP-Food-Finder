@@ -23,10 +23,14 @@ struct CreateMenuView: View {
                     .font(.system(size: 20))
                     .padding(.trailing, 20)
                 TextField("Masukkan harga", text: Binding(
-                        get: { String(request.price) },
-                        set: { request.price = Double($0) ?? 0 }
-                    ))
-                    .font(.system(size: 20, design: .rounded))
+                    get: {
+                        guard let price = request.price else { return "" }
+                        return String(price)
+                    },
+                    set: { newValue in
+                        request.price = Double(newValue)
+                    }
+                ))
             }
             .padding()
             .background(

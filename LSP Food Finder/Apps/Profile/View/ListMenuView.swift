@@ -12,8 +12,6 @@ struct ListMenuView: View {
     @StateObject var viewModel: ListMenuViewModel
     @State private var isSheetPresented: Bool = false
     @State private var isSheetDeletePresented: Bool = false
-    @State private var selectedMenuId: Int?
-
    
     var body: some View {
         VStack {
@@ -21,12 +19,10 @@ struct ListMenuView: View {
                 switch viewModel.state {
                 case .idle:
                     VStack(spacing: 20) {
-                        ForEach(viewModel.menuList, id: \.id) { menu in
-                            MenuListItemView(data: menu)
-                                .onTapGesture {
-                                    selectedMenuId = menu.id
-                                    isSheetDeletePresented = true
-                                }
+                        ForEach(viewModel.menuList, id: \.id) { menu in                 
+                            NavigationLink(destination: EditMenuView(selectedMenuId: menu.id, viewModel: viewModel)) {
+                                MenuListItemView(data: menu)
+                            }
                         }
                         Spacer()
                         ButtonHorizontalFullScreenView(backgorundColor: .yellow, buttonTitle: "Tambah Menu", isEnabled: true, action: {
@@ -63,13 +59,6 @@ struct ListMenuView: View {
             CreateMenuView(action: viewModel.createMenu, request: $viewModel.requestMenu, isEnabled: true)
                 .presentationDetents([.height(350)])
         }
-        .sheet(isPresented: $isSheetDeletePresented) {
-            DeleteMenuView(action: {
-                viewModel.deleteMenu(id: selectedMenuId)
-            })
-            .presentationDetents([.height(150)])
-        }
-        
     }
 }
 

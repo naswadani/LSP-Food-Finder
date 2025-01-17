@@ -6,7 +6,6 @@ struct EditProfileRestoView: View {
     @StateObject var viewModel: CreateRestoProfileViewModel
     @State private var isImagePickerPresented = false
     @State private var selectedImage: UIImage?
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @StateObject private var locationManager = LocationManager()
     @State private var pickerItem: PHPickerResult?
     
@@ -36,20 +35,11 @@ struct EditProfileRestoView: View {
                     )
                 }
                 
-                // Image Picker Buttons
-                HStack(spacing: 15) {
-                    ButtonToAddPhotoView(action: {
-                        sourceType = .camera
-                        isImagePickerPresented = true
-                    }, label: "Camera")
-                    
-                    ButtonToAddPhotoView(action: {
-                        sourceType = .photoLibrary
-                        isImagePickerPresented = true
-                    }, label: "Gallery")
-                }
+                ButtonHorizontalFullScreenView(backgorundColor: .yellow, buttonTitle: "Gallery", isEnabled: true, action: {
+                    isImagePickerPresented = true
+                })
                 
-                // Form Fields
+                
                 VStack(alignment: .leading, spacing: 15) {
                     formSection(label: "Nama Resto", icon: "fork.knife", value: $viewModel.request.name)
                     formSection(label: "Deskripsi", icon: "document.fill", value: $viewModel.request.description)
@@ -87,7 +77,7 @@ struct EditProfileRestoView: View {
             .padding(.horizontal)
             .sheet(isPresented: $isImagePickerPresented) {
                 PHPickerViewControllerRepresented(
-                    pickerItem: .constant(nil), // Tidak perlu menyimpan PHPickerResult
+                    pickerItem: .constant(nil),
                     isImagePickerPresented: $isImagePickerPresented,
                     selectedImage: $selectedImage
                 )

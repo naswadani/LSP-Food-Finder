@@ -11,7 +11,7 @@ struct CreateMenuRequestModel: Codable {
     var restaurantId: Int
     var name: String
     var description: String
-    var price: Double
+    var price: Double?
     
     enum CodingKeys: String, CodingKey {
         case restaurantId = "restaurant_id"

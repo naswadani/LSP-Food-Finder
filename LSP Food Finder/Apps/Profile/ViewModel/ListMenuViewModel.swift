@@ -5,6 +5,7 @@
 //  Created by naswakhansa on 10/01/25.
 //
 
+import SwiftUI
 import Foundation
 
 enum ListMenuState {
@@ -28,7 +29,7 @@ class ListMenuViewModel: ObservableObject {
     init(repository: ProfileRepositoryProtocol, selectedRestoId: Int?) {
         self.repository = repository
         self.selectedRestoId = selectedRestoId
-        self.requestMenu = CreateMenuRequestModel(restaurantId: 0, name: "", description: "", price: 0)
+        self.requestMenu = CreateMenuRequestModel(restaurantId: 0, name: "", description: "", price: nil)
         self.setupEditRestoProfileValidation()
     }
     
@@ -59,7 +60,7 @@ class ListMenuViewModel: ObservableObject {
     }
     
     private func handleSuccessCreateMenu(_ response: MenuDetailResponseModel) {
-        self.requestMenu = CreateMenuRequestModel(restaurantId: 0, name: "", description: "", price: 0)
+        self.requestMenu = CreateMenuRequestModel(restaurantId: 0, name: "", description: "", price: nil)
         self.refresh()
     }
     
@@ -144,6 +145,24 @@ class ListMenuViewModel: ObservableObject {
                 !request.description.isEmpty
             }
             .assign(to: &$isFormCreateMenuValid)
+    }
+    
+    func uploadRestoImage(image: UIImage, selectedId: Int) {
+        
+        guard let token = KeychainManager.shared.get(key: "access_token") else {
+            return
+        }
+        
+        repository.uploadImageMenu(token: token, image: image, id: selectedId) {[weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("ok")
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
     
     

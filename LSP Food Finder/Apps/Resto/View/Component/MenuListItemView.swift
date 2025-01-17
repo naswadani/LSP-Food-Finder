@@ -22,7 +22,7 @@ struct MenuListItemView: View {
                 Text(data.description)
                     .font(.system(size: 18, weight: .regular, design: .rounded))
                     .lineLimit(1)
-                Text("\(data.price)")
+                Text(data.formattedPrice)
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
             }
             Spacer()

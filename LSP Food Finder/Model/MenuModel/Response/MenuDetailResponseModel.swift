@@ -24,5 +24,10 @@ struct MenuDetailResponseModel : Codable {
         guard let imagePath = image else { return nil }
         return APIConfig.baseURL + imagePath
     }
+    
+    
+    var formattedPrice: String {
+        return price.replacingOccurrences(of: ".00", with: "")
+    }
 }
 
