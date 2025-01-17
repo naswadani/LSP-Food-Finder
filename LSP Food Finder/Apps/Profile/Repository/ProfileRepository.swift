@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 protocol ProfileRepositoryProtocol {
     func getProfileData(token: String, completion: @escaping (Result<UserProfileResponseModel, Error>) -> Void)
@@ -16,7 +17,7 @@ protocol ProfileRepositoryProtocol {
     func fetchMenu(id: Int, token: String, completion: @escaping (Result<[MenuDetailResponseModel], Error>) -> Void)
     func createMenu(id: Int, request: CreateMenuRequestModel, token: String, completion: @escaping (Result<MenuDetailResponseModel, Error>) -> Void)
     func deleteMenu(id: Int, token: String, completion: @escaping (Result<Void, Error>) -> Void)
-
+    func uploadImageResto(token: String, image: UIImage, id: Int, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class ProfileRepository: ProfileRepositoryProtocol {
@@ -58,4 +59,7 @@ class ProfileRepository: ProfileRepositoryProtocol {
         profileDataHandler.deleteMenu(id: id, token: token, completion: completion)
     }
 
+    func uploadImageResto(token: String, image: UIImage, id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        profileDataHandler.uploadImageResto(token: token, image: image, id: id, completion: completion)
+    }
 }

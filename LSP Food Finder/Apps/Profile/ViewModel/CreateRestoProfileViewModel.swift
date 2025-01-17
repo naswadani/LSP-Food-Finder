@@ -67,22 +67,14 @@ class CreateRestoProfileViewModel: ObservableObject {
             return
         }
         
-        let header = ["Authorization": "Bearer \(token)"]
-        
-        guard let imageData = image.jpegData(compressionQuality: 0.5) else {
-            return
-        }
-        
-        AF.upload(multipartFormData: { multipartFormData in
-            multipartFormData.append(imageData, withName: "image", fileName: "resto.jpg", mimeType: "image/jpeg")
-        }, to: APIConfig.postImageResto(id: id), headers: HTTPHeaders(header))
-        .validate()
-        .responseDecodable(of: RestoDetailResponseModel.self) { response in
-            switch response.result {
-            case .success(let result):
-                print("succes")
-            case .failure(let error):
-                print("error")
+        repository.uploadImageResto(token: token, image: image, id: id) {[weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    print("success")
+                case .failure(let error):
+                    print("failed")
+                }
             }
         }
     }

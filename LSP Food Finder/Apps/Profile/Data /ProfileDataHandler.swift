@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import SwiftUI
 
 protocol ProfileDataHandlerProtocol {
     func getProfileData(token: String, completion: @escaping (Result<UserProfileResponseModel, Error>) -> Void)
@@ -17,6 +18,7 @@ protocol ProfileDataHandlerProtocol {
     func fetchMenu(id: Int, token: String, completion: @escaping (Result<[MenuDetailResponseModel], Error>) -> Void)
     func createMenu(id: Int, request: CreateMenuRequestModel, token: String, completion: @escaping (Result<MenuDetailResponseModel, Error>) -> Void)
     func deleteMenu(id: Int, token: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func uploadImageResto(token: String, image: UIImage, id: Int, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 class ProfileDataHandler: ProfileDataHandlerProtocol {
@@ -133,6 +135,27 @@ class ProfileDataHandler: ProfileDataHandlerProtocol {
                     completion(.failure(error))
                 }
             }
+    }
+    
+    func uploadImageResto(token: String, image: UIImage, id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        let header = ["Authorization": "Bearer \(token)"]
+        
+        guard let imageData = image.jpegData(compressionQuality: 0.5) else {
+            return
+        }
+        
+        AF.upload(multipartFormData: { multipartFormData in
+            multipartFormData.append(imageData, withName: "image", fileName: "resto.jpg", mimeType: "image/jpeg")
+        }, to: APIConfig.postImageResto(id: id), headers: HTTPHeaders(header))
+        .validate()
+        .responseDecodable(of: RestoDetailResponseModel.self) { response in
+            switch response.result {
+            case .success(let result):
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     

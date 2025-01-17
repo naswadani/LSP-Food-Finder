@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 struct EditProfileRestoView: View {
     
@@ -7,6 +8,8 @@ struct EditProfileRestoView: View {
     @State private var selectedImage: UIImage?
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @StateObject private var locationManager = LocationManager()
+    @State private var pickerItem: PHPickerResult?
+    
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -15,10 +18,10 @@ struct EditProfileRestoView: View {
                 if let selectedImage = selectedImage {
                     Image(uiImage: selectedImage)
                         .resizable()
-                        .scaledToFill()
                         .frame(maxWidth: .infinity)
-                        .frame(height: 350)
+                        .frame(height: 250)
                         .cornerRadius(10)
+                        .clipped()
                 } else {
                     ZStack {
                         Color.gray.opacity(0.3)
@@ -83,13 +86,13 @@ struct EditProfileRestoView: View {
             }
             .padding(.horizontal)
             .sheet(isPresented: $isImagePickerPresented) {
-                ImagePicker(isImagePickerPresented: $isImagePickerPresented, sourceType: sourceType, uploadMenuImageData: { imageData in
-                    if let image = UIImage(data: imageData) {
-                        selectedImage = image
-                    }
-                })
+                PHPickerViewControllerRepresented(
+                    pickerItem: .constant(nil), // Tidak perlu menyimpan PHPickerResult
+                    isImagePickerPresented: $isImagePickerPresented,
+                    selectedImage: $selectedImage
+                )
             }
-
+            
         }
         .onReceive(locationManager.$latitude) { newLatitude in
             viewModel.request.lattitude = newLatitude ?? 0
